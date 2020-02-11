@@ -168,10 +168,7 @@ instance SNum k => Num (SomeSing k) where
   signum (SomeSing a) = SomeSing (sSignum a)
   fromInteger n = withSomeSing (fromIntegral n) (SomeSing . sFromInteger)
 
-instance ShowSing k => Show (SomeSing k) where
-  showsPrec p (SomeSing (s :: Sing a)) =
-    showParen (p > 10) $ showString "SomeSing " . showsPrec 11 s
-      :: ShowSing' a => ShowS
+deriving instance ShowSing k => Show (SomeSing k)
 
 instance SSemigroup k => Semigroup (SomeSing k) where
   SomeSing a <> SomeSing b = SomeSing (a %<> b)

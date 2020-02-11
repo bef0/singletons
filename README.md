@@ -59,6 +59,7 @@ following:
 * `PolyKinds`
 * `RankNTypes`
 * `ScopedTypeVariables`
+* `StandaloneDeriving`
 * `StandaloneKindSignatures`
 * `TemplateHaskell`
 * `TypeApplications`

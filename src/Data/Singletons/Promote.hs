@@ -175,7 +175,7 @@ promoteShowInstances = concatMapM promoteShowInstance
 
 -- | Produce an instance for 'PShow' from the given type
 promoteShowInstance :: OptionsMonad q => Name -> q [Dec]
-promoteShowInstance = promoteInstance (mkShowInstance ForPromotion) "Show"
+promoteShowInstance = promoteInstance mkShowInstance "Show"
 
 -- | Produce an instance for @(==)@ (type-level equality) from the given type
 promoteEqInstance :: OptionsMonad q => Name -> q [Dec]

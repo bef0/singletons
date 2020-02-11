@@ -1,8 +1,6 @@
 Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     singletons
-      [d| infix 4 <=>
-          
-          const :: a -> b -> a
+      [d| const :: a -> b -> a
           const x _ = x
           fooCompare :: Foo -> Foo -> Ordering
           fooCompare A A = EQ
@@ -38,8 +36,8 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     class MyOrd a where
       mycompare :: a -> a -> Ordering
       (<=>) :: a -> a -> Ordering
+      infix 4 <=>
       (<=>) = mycompare
-    infix 4 <=>
     instance MyOrd Nat where
       mycompare Zero Zero = EQ
       mycompare Zero (Succ _) = LT
@@ -136,7 +134,6 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply (<=>@#@$) a0123456789876543210 = (<=>@#@$$) a0123456789876543210
     instance SuppressUnusedWarnings (<=>@#@$) where
       suppressUnusedWarnings = snd (((,) (:<=>@#@$###)) ())
-    infix 4 <=>@#@$
     type (<=>@#@$$) :: forall a. a -> (~>) a Ordering
     data (<=>@#@$$) a0123456789876543210 a0123456789876543210
       where
@@ -145,10 +142,8 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
     type instance Apply ((<=>@#@$$) a0123456789876543210) a0123456789876543210 = (<=>@#@$$$) a0123456789876543210 a0123456789876543210
     instance SuppressUnusedWarnings ((<=>@#@$$) a0123456789876543210) where
       suppressUnusedWarnings = snd (((,) (:<=>@#@$$###)) ())
-    infix 4 <=>@#@$$
     type (<=>@#@$$$) (a0123456789876543210 :: a) (a0123456789876543210 :: a) =
         (<=>) a0123456789876543210 a0123456789876543210 :: Ordering
-    infix 4 <=>@#@$$$
     type TFHelper_0123456789876543210 :: a -> a -> Ordering
     type family TFHelper_0123456789876543210 a a where
       TFHelper_0123456789876543210 a_0123456789876543210 a_0123456789876543210 = Apply (Apply MycompareSym0 a_0123456789876543210) a_0123456789876543210
@@ -282,7 +277,6 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
         TFHelper_0123456789876543210 a0123456789876543210 a0123456789876543210 :: Bool
     instance PEq Foo2 where
       type (==) a a = Apply (Apply TFHelper_0123456789876543210Sym0 a) a
-    infix 4 %<=>
     sFooCompare ::
       forall (t :: Foo) (t :: Foo).
       Sing t
@@ -335,6 +329,7 @@ Singletons/Classes.hs:(0,0)-(0,0): Splicing declarations
       (%<=>) ::
         forall (t :: a) (t :: a).
         Sing t -> Sing t -> Sing (Apply (Apply (<=>@#@$) t) t :: Ordering)
+      infix 4 %<=>
       default (%<=>) ::
                 forall (t :: a) (t :: a).
                 ((Apply (Apply (<=>@#@$) t) t :: Ordering)

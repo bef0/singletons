@@ -1,6 +1,10 @@
 Changelog for singletons project
 ================================
 
+next
+----
+* TODO RGS: Derivable `ShowSing` changes
+
 2.7
 ---
 * Require GHC 8.10.

@@ -56,7 +56,7 @@ infixr 4 :&:
 instance (ShowSing s, ShowApply t) => Show (Sigma s t) where
   showsPrec p ((a :: Sing (fst :: s)) :&: b) = showParen (p >= 5) $
     showsPrec 5 a . showString " :&: " . showsPrec 5 b
-      :: (ShowSing' fst, ShowApply' t fst) => ShowS
+      :: ShowApply' t fst => ShowS
 
 -- | Unicode shorthand for 'Sigma'.
 type Σ :: forall s -> (s ~> Type) -> Type
@@ -76,7 +76,7 @@ instance forall s (t :: s ~> Type) (sig :: Sigma s t).
   showsPrec p ((sa :: Sing ('WrapSing (sfst :: Sing fst))) :%&: (sb :: Sing snd)) =
     showParen (p >= 5) $
       showsPrec 5 sa . showString " :&: " . showsPrec 5 sb
-        :: (ShowSing' fst, ShowSingApply' t fst snd) => ShowS
+        :: ShowSingApply' t fst snd => ShowS
 
 instance forall s t (fst :: s) (a :: Sing fst) (b :: t @@ fst).
        (SingI fst, SingI b)

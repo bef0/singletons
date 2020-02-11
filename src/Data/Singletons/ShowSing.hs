@@ -7,6 +7,7 @@
 {-# LANGUAGE QuantifiedConstraints #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE StandaloneKindSignatures #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE UndecidableInstances #-}
@@ -42,7 +43,9 @@ import Data.Singletons.TypeLits.Internal
 import Data.Singletons.Util
 import GHC.Show (appPrec, appPrec1)
 import qualified GHC.TypeNats as TN
+import Text.Show
 
+-- TODO RGS: Revise the documentation below now that ShowSing /can/ be derived.
 -- | In addition to the promoted and singled versions of the 'Show' class that
 -- @singletons@ provides, it is also useful to be able to directly define
 -- 'Show' instances for singleton types themselves. Doing so is almost entirely
@@ -196,8 +199,8 @@ instance (forall (z :: k). ShowSing' z) => ShowSing k
 -- Bummer. Unless that bug were to be fixed, the current definition of
 -- `ShowSing'` is the best that we can do.
 type ShowSing' :: k -> Constraint
-class    Show (Sing z) => ShowSing' z
-instance Show (Sing z) => ShowSing' z
+class    (forall sing. sing ~ Sing => Show (sing z)) => ShowSing' z
+instance Show (Sing z)                               => ShowSing' z
 
 {-
 Note [Define ShowSing as a class, not a type synonym]
@@ -275,15 +278,17 @@ ultimately went with.
 -- (S)WrappedSing instances
 ------------------------------------------------------------
 
+-- TODO RGS: Describe why this hack is necessary.
 instance ShowSing k => Show (WrappedSing (a :: k)) where
-  showsPrec p (WrapSing s) = showParen (p >= 11) $
-    showString "WrapSing {unwrapSing = " . showsPrec 0 s . showChar '}'
-      :: ShowSing' a => ShowS
+  showsPrec = showsWrappedSingPrec
+  show x = showsWrappedSingPrec 0 x ""
+  showList = showListWith (showsWrappedSingPrec 0)
 
-instance ShowSing k => Show (SWrappedSing (ws :: WrappedSing (a :: k))) where
-  showsPrec p (SWrapSing s) = showParen (p >= 11) $
-    showString "SWrapSing {sUnwrapSing = " . showsPrec 0 s . showChar '}'
-      :: ShowSing' a => ShowS
+showsWrappedSingPrec :: ShowSing k => Int -> WrappedSing (a :: k) -> ShowS
+showsWrappedSingPrec p (WrapSing s) = showParen (p >= 11) $
+  showString "WrapSing {unwrapSing = " . showsPrec 0 s . showChar '}'
+
+deriving instance ShowSing k => Show (SWrappedSing (ws :: WrappedSing (a :: k)))
 
 ------------------------------------------------------------
 -- TypeLits instances
